@@ -2,7 +2,7 @@ import * as dotenv from "dotenv"
 dotenv.config("../")
 import { Client,GatewayIntentBits  } from "discord.js";
 
-
+                                    //permissions
 const tnbs = new Client({intents : [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent]});
 
 tnbs.login(process.env.BOT_TOKEN)
