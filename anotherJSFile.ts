@@ -1,3 +1,5 @@
+import message from "./justAnotherJSFile"
+
 // Test new Branch
 interface testObject{
     author: String,
@@ -7,7 +9,7 @@ interface testObject{
 
 
 let firstFunc = (testParam:testObject)=>{
-console.log(testParam)
+console.log(testParam,message)
 }
 
 let testObject={
