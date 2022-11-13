@@ -29,7 +29,7 @@
 import dotenv from "dotenv";
 dotenv.config("../");
 import { Client, GatewayIntentBits, SlashCommandBuilder } from "discord.js";
-
+import { messageHandler } from "./events/messageHandler";
 
 //permissions
 const tnbs = new Client({
@@ -50,12 +50,4 @@ tnbs.on("ready", () => {
   console.log(`Logged in as ${tnbs.user.tag}!`);
 });
 
-tnbs.on("messageCreate", (message)=>{
-  console.log(message.content);
-  if(message.content === "test"){
-      message.reply("Test message acknowledged!")
-  }
-  if(message.content.toLowerCase() === "chester"){
-      message.reply("gago")
-  }
-})
+tnbs.on("messageCreate", messageHandler);
