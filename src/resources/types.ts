@@ -17,7 +17,7 @@ export interface IMessage {
   position: any;
   editedTimeStamp: any;
   reactions: any;
-  mentions: any;
+  mentions: IMentions;
   webhookId: any;
   groupActivityApplication: any;
   applicationId: any;
@@ -38,4 +38,15 @@ export interface IUser {
   avatar: string;
   banner: any;
   accentColor: any;
+}
+
+export interface IMentions {
+  everyone: boolean;
+  users: IUser[];
+  roles: any;
+  _members: any;
+  _channels: any;
+  _parsedUsers: any;
+  crosspostedChannels: any;
+  repliedUser: any;
 }

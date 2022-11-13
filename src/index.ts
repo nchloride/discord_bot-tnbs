@@ -29,7 +29,7 @@
 import dotenv from "dotenv";
 dotenv.config("../");
 import { Client, GatewayIntentBits, SlashCommandBuilder } from "discord.js";
-import { IMessage } from "./resources/types";
+import { messageHandler } from "./events/messageHandler";
 
 //permissions
 const tnbs = new Client({
@@ -50,11 +50,4 @@ tnbs.on("ready", () => {
   console.log(`Logged in as ${tnbs.user.tag}!`);
 });
 
-tnbs.on("messageCreate", (message: IMessage) => {
-  if (message.content === "test") {
-    message.reply("Test message acknowledged!");
-  }
-  if (message.content.toLowerCase() === "chester") {
-    message.reply("<:Shreky:743867384695357530>");
-  }
-});
+tnbs.on("messageCreate", messageHandler);
