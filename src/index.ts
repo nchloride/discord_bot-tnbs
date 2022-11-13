@@ -54,7 +54,6 @@ tnbs.on("ready", () => {
 tnbs.on("messageCreate", messageHandler);
 
 tnbs.on("presenceUpdate",(oldPresence,newPresence)=>{
-  console.log(newPresence);
   if(newPresence.status === "online"){
     console.log(newPresence.user.username, "is", newPresence.status);
   }
