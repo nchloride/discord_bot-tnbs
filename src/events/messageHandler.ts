@@ -5,7 +5,7 @@ export const messageHandler = async (message: IMessage) => {
   const content: string = message.content.trim();
   const individualWords = content.split(" ").filter((word) => word != "");
   const messageAuthor = message.author;
-  const channel: IChannel = getChannelByChannelId(message.channelId);
+  const channel: IChannel = await getChannelByChannelId(message.channelId);
 
   if (content === "test") {
     message.reply("Test message acknowledged!");
@@ -22,9 +22,10 @@ export const messageHandler = async (message: IMessage) => {
       }
     });
   }
-
+  console.log(message);
   if (
     channel.name === "testing" &&
+    !messageAuthor.bot &&
     !(
       message.author.username === "lass_23" ||
       message.author.username === "ChLoride"
@@ -35,5 +36,8 @@ export const messageHandler = async (message: IMessage) => {
         messageAuthor.username +
         " dun kayo mag chat sa ibang channel!"
     );
+  }
+  if (messageAuthor.bot && channel.name !== "music") {
+    message.delete();
   }
 };

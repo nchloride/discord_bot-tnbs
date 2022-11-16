@@ -25,7 +25,8 @@ export interface IMessage {
   flags: any;
   reference: any;
   interaction: any;
-  reply: (reply: any) => any;
+  reply: (reply: any) => void;
+  delete: () => void;
 }
 
 export interface IUser {
