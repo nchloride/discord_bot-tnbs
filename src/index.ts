@@ -30,6 +30,7 @@ import dotenv from "dotenv";
 dotenv.config("../");
 import { Client, GatewayIntentBits, SlashCommandBuilder } from "discord.js";
 import { messageHandler } from "./events/messageHandler";
+import { IChannel } from "./resources/types";
 
 //permissions
 const tnbs = new Client({
@@ -37,7 +38,7 @@ const tnbs = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildPresences
+    GatewayIntentBits.GuildPresences,
   ],
 });
 
@@ -53,8 +54,11 @@ tnbs.on("ready", () => {
 
 tnbs.on("messageCreate", messageHandler);
 
-tnbs.on("presenceUpdate",(oldPresence,newPresence)=>{
-  if(newPresence.status === "online"){
+export const getChannelByChannelId = (channelId: string) =>
+  tnbs.channels.fetch(channelId).then((channel) => channel);
+
+tnbs.on("presenceUpdate", (oldPresence, newPresence) => {
+  if (newPresence.status === "online") {
     console.log(newPresence.user.username, "is", newPresence.status);
   }
-})
+});
