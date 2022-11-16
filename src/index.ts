@@ -58,7 +58,6 @@ export const getChannelByChannelId = (channelId: string) =>
   tnbs.channels.fetch(channelId).then((channel) => channel);
 
 tnbs.on("presenceUpdate", (oldPresence, newPresence) => {
-  console.log(newPresence);
   if (newPresence.status === "online") {
     console.log(newPresence.user.username, "is", newPresence.status);
   }
