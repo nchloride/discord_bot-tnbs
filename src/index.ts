@@ -32,6 +32,8 @@ import { Client, GatewayIntentBits, SlashCommandBuilder } from "discord.js";
 import { messageHandler } from "./events/messageHandler";
 import { IChannel } from "./resources/types";
 
+const EXILED_MEMBER = "VISTA ROLE"
+
 //permissions
 const tnbs = new Client({
   intents: [
@@ -57,8 +59,32 @@ tnbs.on("messageCreate", messageHandler);
 export const getChannelByChannelId = (channelId: string) =>
   tnbs.channels.fetch(channelId).then((channel) => channel);
 
-tnbs.on("presenceUpdate", (oldPresence, newPresence) => {
-  if (newPresence.status === "online") {
-    console.log(newPresence.user.username, "is", newPresence.status);
+interface IMember{
+  username:string
+  id:string
+}
+
+let onlineMembers:IMember[] = [];
+
+tnbs.on("presenceUpdate",  (oldPresence, newPresence) => {
+  console.log(newPresence.member.roles.cache.map(role => role.name));
+  let guildChannels = newPresence.guild.channels;
+  const isWhitelisted = newPresence.member.roles.cache.map(role => role.name).every(role=> role!==EXILED_MEMBER)
+  console.log(isWhitelisted);
+  const isAlreadyOnline = onlineMembers.some(user => user.username === newPresence.user.username);
+  if (isWhitelisted ) {
+    // guildChannels.cache.find(channel=> channel.name === "testing").send("testing")
+    
+    
+    if(newPresence.status === "online"){
+      onlineMembers.push({username:newPresence.user.username,id:newPresence.user.id})
+      console.log(onlineMembers.length);
+    }
+    else if(newPresence.status === "offline"){
+      onlineMembers = onlineMembers.filter(member => member.id !== newPresence.user.id)
+    }
+
+    console.log(onlineMembers)
+
   }
 });
