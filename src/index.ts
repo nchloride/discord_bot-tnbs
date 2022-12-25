@@ -26,9 +26,9 @@
 //   await BOT.login(process.env.TOKEN);
 // };
 
-import dotenv from "dotenv";
-dotenv.config("../");
-import { Client, GatewayIntentBits, SlashCommandBuilder } from "discord.js";
+require("dotenv").config("../")
+
+import { Client, GatewayIntentBits, GuildBasedChannel, GuildChannelManager, GuildManager, SlashCommandBuilder } from "discord.js";
 import { messageHandler } from "./events/messageHandler";
 import { IChannel } from "./resources/types";
 
@@ -41,6 +41,7 @@ const tnbs = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildVoiceStates
   ],
 });
 
@@ -64,21 +65,24 @@ interface IMember{
   id:string
 }
 
-let onlineMembers:IMember[] = [];
+let onlineMembers = [];
 
 tnbs.on("presenceUpdate",  (oldPresence, newPresence) => {
   console.log(newPresence.member.roles.cache.map(role => role.name));
-  let guildChannels = newPresence.guild.channels;
+  let guildChannels  = newPresence.guild.channels;
   const isWhitelisted = newPresence.member.roles.cache.map(role => role.name).every(role=> role!==EXILED_MEMBER)
   console.log(isWhitelisted);
-  const isAlreadyOnline = onlineMembers.some(user => user.username === newPresence.user.username);
+  const notOnTheList = onlineMembers.every(user => user.username !== newPresence.user.username);
   if (isWhitelisted ) {
-    // guildChannels.cache.find(channel=> channel.name === "testing").send("testing")
-    
-    
-    if(newPresence.status === "online"){
-      onlineMembers.push({username:newPresence.user.username,id:newPresence.user.id})
-      console.log(onlineMembers.length);
+    //  guildChannels.cache.find(channel=> channel.name === "testing").send(`${newPresence.user}`);
+    if(newPresence.status === "online" && notOnTheList){
+      onlineMembers.push(newPresence.user)
+      console.log(newPresence.user.tag);
+      if(onlineMembers.length <= 2){
+        const olMembers = onlineMembers.join(" ");
+        const guild  = guildChannels.cache.find(channel=> channel.name === "testing");
+        
+      }
     }
     else if(newPresence.status === "offline"){
       onlineMembers = onlineMembers.filter(member => member.id !== newPresence.user.id)
