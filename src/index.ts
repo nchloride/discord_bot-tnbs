@@ -35,7 +35,7 @@ import { IChannel } from "./resources/types";
 const EXILED_MEMBER = "VISTA ROLE"
 
 //permissions
-const tnbs = new Client({
+const tnbs:Client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
