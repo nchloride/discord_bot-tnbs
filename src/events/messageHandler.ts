@@ -1,9 +1,25 @@
 import { Message, User } from "discord.js";
 import { getChannelByChannelId } from "..";
 import { IChannel, IMessage, IUser } from "../resources/types";
-const { joinVoiceChannel } = require('@discordjs/voice');
+const { joinVoiceChannel, VoiceConnectionStatus, createAudioPlayer  } = require('@discordjs/voice');
+
+const yts = require( 'yt-search' )
+const fs = require('fs');
+const ytdl = require('ytdl-core');
+const path = require("path")
 
 let connection;
+let songs = []
+
+
+const songPlayer = async () => {
+  const searchResults = await yts(songs[0]);
+  const music = searchResults.videos[0]
+  const songDownload = ytdl(music.url,{filter:"audioonly"}).pipe(fs.createWriteStream(path.join(__dirname, "..","..","songs",`${music.title}.mp3`))).on("finish",()=>{
+    console.log(songDownload)
+  })
+}
+
 
 export const messageHandler = async (message: Message ) => {
   const content: string = message.content.trim();
@@ -52,17 +68,21 @@ export const messageHandler = async (message: Message ) => {
       );
     }
   
-    const hasPlayCommand:boolean = content.split(" ")[0] === "$play";
-    
+    const hasPlayCommand:boolean = content.split(" ")[0] === "$play";  
+    const validMusic = content.split(" ")[1]
     const channelState = message.member.voice.channel
-    // console.log(channelState, hasPlayCommand);
-    if(hasPlayCommand && channelState){
-      console.log(message.member.voice.channel.id,channel.guild.id);
+    //////////////////////////////////////////////////////////
+    if(hasPlayCommand && channelState && validMusic){
       connection = joinVoiceChannel({
         channelId: channelState.id,
         guildId: channelState.guild.id,
         adapterCreator: channelState.guild.voiceAdapterCreator,
       });
+      songs.push(content.split(" ")[1])  
+      songPlayer()
+      // const youtubeResult = await musicSearch(songs[0]);
+      // console.log(youtubeResult);
+     
       message.reply("test1")
     }
     else if (content.split(" ")[0] === "$stop"){
@@ -71,9 +91,12 @@ export const messageHandler = async (message: Message ) => {
     else{
       message.reply("please join a voice channel")
     }
-
-
-
   }
 
+
+
+  connection?.on(VoiceConnectionStatus.Ready, ()=>{
+    console.log("Playing music......", songs)
+  })
 };
+
